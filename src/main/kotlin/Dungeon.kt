@@ -1,42 +1,48 @@
 package org.example
 
 interface Dungeon {
-    // TODO: переписать код так, что бы вместо 1,2 были данные из коллекции 1 to normal; 2 to heroic
-    var normalMode: MutableMap<Int, Int>
-    var heroicMode: MutableMap<Int, Int>
+    var normal: MutableMap<Int, Int>
+    var heroic: MutableMap<Int, Int>
 
+//    fun getRewards( difficulty: String ): Int{
+//        var result = 0
+//        when( difficulty ){
+//            "normal" -> result = calculateRewards( "normal" )
+//            "heroic" -> result = calculateRewards( "heroic" )
+//        }
+//        return result
+//    }
 
-    // установить фазу + награду за фазу
-    fun setData(mode: Int, phase: Int, reward: Int){
-        when( mode ){
-            1 -> normalMode[phase] = reward
-            2 -> heroicMode[phase] = reward
-            else -> error("Не существующий режим")
+//    fun getRewardByPhase( difficulty: String, phase: Int ): Int {
+//        var result = 0
+//        when( difficulty ) {
+//            "normal" -> result = normal.getValue( phase )
+//            "heroic" -> result = heroic.getValue( phase )
+//        }
+//        return result
+//    }
+
+    fun setRewardByPhase( difficulty: String, phase: Int, reward: Int){
+        when( difficulty ){
+            "normal" -> normal[ phase ] = reward
+            "heroic" -> heroic[ phase ] = reward
         }
     }
-    // установить фазу с учётом null-награды
-    fun setPhase(mode: Int, phase: Int, reward: Int?){
-        when( mode ){
-            1 -> normalMode[phase] = reward ?: 0
-            2 -> heroicMode[phase] = reward ?: 0
-            else -> error("Не существующий режим")
-        }
-    }
 
-    // установить награду за фазу
-    fun setReward(mode: Int, phase: Int, newReward: Int){
-        when( mode ){
-            1 -> normalMode.replace( phase, newReward )
-            2 -> heroicMode.replace( phase, newReward )
-            else -> error("Не существующий режим")
+    fun calculateRewards( difficulty: String ): Int{
+        var result = 0
+        when( difficulty ){
+            "normal" -> {
+                for( phase in normal ){
+                    result += phase.value
+                }
+            }
+            "heroic" -> {
+                for( phase in heroic ){
+                    result += phase.value
+                }
+            }
         }
-    }
-    // получить информацию о фазе
-    fun getPhaseInfo(mode: Int, phase: Int): Int {
-        return when( mode ){
-            1 -> normalMode.getValue( phase )
-            2 -> heroicMode.getValue( phase )
-            else -> error("Не существующий режим")
-        }
+        return result
     }
 }
